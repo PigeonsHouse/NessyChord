@@ -19,14 +19,10 @@ jobs:
           node-version: 18
 
       - name: Install packages
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install
+        run: npm install
 
       - name: Build
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+        run: npm run build
 
       - name: create CNAME
         run: |
