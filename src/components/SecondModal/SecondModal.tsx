@@ -8,7 +8,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Button } from "@mui/material";
 
-export type BeatType =  "fourQuarter" | "threeQuarter";
+export type BeatType =  "4/4" | "3/4";
 
 export type SongSetting = Readonly<{
   beatType: BeatType;
@@ -24,7 +24,7 @@ export const SecondModal: React.FC<SecondModalProps> = ({
   open,
   onSelect,
 }) => {
-  const [beatType, setBeatType] = useState<BeatType>("fourQuarter");
+  const [beatType, setBeatType] = useState<BeatType>("4/4");
   const [bpm, setBpm] = useState<number>(120);
   const changeBeatType = useCallback((event: SelectChangeEvent) => {
     setBeatType((event.target.value) as BeatType);
@@ -51,8 +51,8 @@ export const SecondModal: React.FC<SecondModalProps> = ({
             id: 'beat-type',
           }}
         >
-          <MenuItem value="fourQuarter">4/4拍子</MenuItem>
-          <MenuItem value="threeQuarter">3/4拍子</MenuItem>
+          <MenuItem value="4/4">4/4拍子</MenuItem>
+          <MenuItem value="3/4">3/4拍子</MenuItem>
         </Select>
       </FormControl>
       <FormControl sx={{ margin: 2 }}>

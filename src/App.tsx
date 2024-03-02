@@ -7,11 +7,6 @@ import ToggleButton from '@mui/material/ToggleButton';
 import { Header, FirstModal, SongSetting, SecondModal, ChordEditor, MelodyEditor, RhythmEditor } from './components';
 import { Main, Root } from './App.styled';
 
-const beatTypeLabel = {
-  "fourQuarter": "4/4",
-  "threeQuarter": "3/4",
-}
-
 type EditTarget = "chord"|"melody"|"rhythm";
 
 function App() {
@@ -21,8 +16,8 @@ function App() {
     }
   });
 
-  const [openFile, changeFile] = useState<string|undefined>(undefined);
-  const [songSetting, setSongSetting] = useState<SongSetting|undefined>(undefined);
+  const [openFile, changeFile] = useState<string|undefined>("");
+  const [songSetting, setSongSetting] = useState<SongSetting|undefined>({beatType: "4/4", bpm: 200});
   const [target, setTarget] = useState<EditTarget>("chord");
 
   const onSelectFirstModal = useCallback((value: string) => {
@@ -59,7 +54,7 @@ function App() {
                 <ToggleButton value="rhythm">リズム</ToggleButton>
               </ToggleButtonGroup>
               <span>
-                拍子：{beatTypeLabel[songSetting.beatType]}
+                拍子：{songSetting.beatType}
               </span>
               <span>
                 BPM：{songSetting.bpm}
@@ -68,7 +63,32 @@ function App() {
             <Main>
             {
               target === "chord" ? (
-                <ChordEditor />
+                <ChordEditor
+                  beat={Number(songSetting.beatType[0])}
+                  viewMeasure={1}
+                  page={1}
+                  chordProgression={{
+                    key: "C",
+                    chords  : [
+                      {
+                        degree: 4,
+                        interval: "major"
+                      },
+                      {
+                        degree: 5,
+                        interval: "major"
+                      },
+                      {
+                        degree: 3,
+                        interval: "minor"
+                      },
+                      {
+                        degree: 6,
+                        interval: "minor"
+                      },
+                    ]
+                  }}
+                />
               ) : target === "melody" ? (
                 <MelodyEditor />
               ) : (

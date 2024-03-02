@@ -5,7 +5,7 @@ import Container from '@mui/material/Container';
 export const Header = () => {
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Toolbar disableGutters>
           VSChord
         </Toolbar>
