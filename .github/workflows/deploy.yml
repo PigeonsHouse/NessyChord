@@ -26,7 +26,7 @@ jobs:
 
       - name: create CNAME
         run: |
-          echo "vschord.pigeons.house" >> dist/CNAME
+          echo "nessy-chord.pigeons.house" >> dist/CNAME
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3

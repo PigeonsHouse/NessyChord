@@ -1,23 +1,17 @@
-import React, { ChangeEvent, useCallback, useState } from "react"
+import React, { useCallback, useState } from "react"
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Button } from "@mui/material";
 
 export type BeatType =  "4/4" | "3/4";
 
-export type SongSetting = Readonly<{
-  beatType: BeatType;
-  bpm: number;
-}>;
-
 type SecondModalProps = Readonly<{
   open: boolean;
-  onSelect: (value: SongSetting) => void;
+  onSelect: (value: BeatType) => void;
 }>;
 
 export const SecondModal: React.FC<SecondModalProps> = ({
@@ -25,16 +19,12 @@ export const SecondModal: React.FC<SecondModalProps> = ({
   onSelect,
 }) => {
   const [beatType, setBeatType] = useState<BeatType>("4/4");
-  const [bpm, setBpm] = useState<number>(120);
   const changeBeatType = useCallback((event: SelectChangeEvent) => {
     setBeatType((event.target.value) as BeatType);
   }, [setBeatType]);
-  const changeBpm = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setBpm(Number(event.target.value));
-  }, [setBpm]);
   const onSubmit = useCallback(() => {
-    onSelect({beatType, bpm});
-  }, [beatType, bpm, onSelect]);
+    onSelect(beatType);
+  }, [beatType, onSelect]);
 
   return (
     <Dialog open={open} fullWidth>
@@ -54,10 +44,6 @@ export const SecondModal: React.FC<SecondModalProps> = ({
           <MenuItem value="4/4">4/4拍子</MenuItem>
           <MenuItem value="3/4">3/4拍子</MenuItem>
         </Select>
-      </FormControl>
-      <FormControl sx={{ margin: 2 }}>
-        <InputLabel htmlFor="bpm">BPM</InputLabel>
-        <OutlinedInput placeholder="BPM" type="number" value={bpm} onChange={changeBpm} />
       </FormControl>
       <Button
         sx={{ mx: 2, mb: 2 }}

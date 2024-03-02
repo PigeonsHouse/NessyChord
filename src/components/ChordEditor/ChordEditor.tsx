@@ -26,15 +26,17 @@ export type Chord = Readonly<{
 type ChordEditorProps = Readonly<{
   beat: number,
   viewMeasure: number,
-  page: number,
+  offset: number,
   key: "A"|"B"|"C"|"D"|"E"|"F"|"G",
   chordProgression: (Chord|null)[],
+  setOffset: (value: number) => void;
+  updateChordProgression: (value: (Chord)[]) => void;
 }>;
 
 export const ChordEditor: React.FC<ChordEditorProps> = ({
   beat,
   viewMeasure,
-  page,
+  offset,
   chordProgression,
 }) => {
   const viewChordCount = useMemo(() => {
@@ -42,7 +44,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
   }, [beat, viewMeasure]);
 
   const viewChords = useMemo(() => {
-    const sliceChords = chordProgression.slice((page-1)*viewChordCount, page*viewChordCount);
+    const sliceChords = chordProgression.slice(offset, offset+viewChordCount);
     const shortageCount = viewChordCount - sliceChords.length;
     if (shortageCount !== 0) {
       for (let i = 0; i < shortageCount; i++) {
@@ -50,7 +52,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
       }
     }
     return sliceChords;
-  }, [chordProgression, page, viewChordCount]);
+  }, [chordProgression, offset, viewChordCount]);
 
   return (
     <Container>
