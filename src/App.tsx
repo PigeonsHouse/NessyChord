@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as Tone from 'tone';
 import { Button, FormControl, InputLabel, MenuItem, OutlinedInput, Select, ThemeProvider, createTheme } from '@mui/material';
 import { cyan } from '@mui/material/colors';
@@ -7,8 +7,8 @@ import PlayArrow from '@mui/icons-material/PlayArrow';
 import Stop from '@mui/icons-material/Stop';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import { Header, FirstModal, SecondModal, ChordEditor, MelodyEditor, RhythmEditor, BeatType } from './components';
-import { Key, Chord } from "./definitions";
+import { Header, FirstModal, SecondModal, ChordEditor, MelodyEditor, RhythmEditor } from './components';
+import { Key, Chord, BeatType } from "./definitions";
 import { Main, Root } from './App.styled';
 
 type EditTarget = "chord"|"melody"|"rhythm";
@@ -31,8 +31,6 @@ const createChords = (key: Key, chordProgression: Chord[]) => {
 
 function App() {
   const dummyData = {
-    openFile: "",
-    beatType: "4/4" as BeatType,
     chordProgression: [
       {
         degree: 4,
@@ -75,8 +73,8 @@ function App() {
     }
   });
 
-  const [openFile, changeFile] = useState<string|undefined>(dummyData.openFile);
-  const [beatType, setBeatType] = useState<BeatType|undefined>(dummyData.beatType);
+  const [openFile, changeFile] = useState<string|undefined>();
+  const [beatType, setBeatType] = useState<BeatType|undefined>();
   const [key, changeKey] = useState<Key>("C");
   const [viewMeasure, changeViewMeasure] = useState<number>(2);
   const [chordProgression, updateChordProgression] = useState<Chord[]>(dummyData.chordProgression);
@@ -87,16 +85,54 @@ function App() {
   const [synth, setSynth] = useState<Tone.PolySynth|null>(null);
   const [playingEventId, setPlayingEventId] = useState<number|undefined>();
 
+  useEffect(() => {
+    const openFile = localStorage.getItem('openFile');
+    if (openFile !== null) {
+      changeFile(openFile);
+    }
+    const beatType = localStorage.getItem('beatType');
+    if (beatType !== null) {
+      if (BeatType.includes(beatType as BeatType)) {
+        setBeatType(beatType as BeatType);
+      } else {
+        localStorage.removeItem('beatType');
+      }
+    }
+    const key = localStorage.getItem('key');
+    if (key !== null) {
+      if (Key.includes(key as Key)) {
+        changeKey(key as Key);
+      } else {
+        localStorage.removeItem('key');
+      }
+    }
+    const bpm = localStorage.getItem('bpm');
+    if (bpm !== null) {
+      setBpm(Number(bpm));
+    }
+    const viewMeasure = localStorage.getItem('viewMeasure');
+    if (viewMeasure !== null) {
+      changeViewMeasure(Number(viewMeasure));
+    }
+    const offset = localStorage.getItem('offset');
+    if (offset !== null) {
+      setOffset(Number(offset));
+    }
+  }, []);
+
   const changeBpm = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setBpm(Number(event.target.value));
+    localStorage.setItem("bpm", event.target.value);
   }, [setBpm]);
   const onSelectFirstModal = useCallback((value: string) => {
     if (value === "newfile") {
-      changeFile("newfile");
+      changeFile(value);
+      localStorage.setItem("openFile", value);
     }
   }, [changeFile]);
   const onSubmitBeatType = useCallback((value: BeatType) => {
     setBeatType(value);
+    localStorage.setItem("beatType", value);
   }, [setBeatType]);
   const onChangeTarget = useCallback((_: React.MouseEvent, value: string) => {
     setTarget(value as EditTarget)
@@ -175,7 +211,8 @@ function App() {
                   disabled={isPlaying}
                   value={key}
                   onChange={(event) => {
-                    changeKey(event.target.value as Key)
+                    changeKey(event.target.value as Key);
+                    localStorage.setItem("key", event.target.value);
                   }}
                   label="キー"
                 >
@@ -194,7 +231,8 @@ function App() {
                   disabled={isPlaying}
                   value={viewMeasure}
                   onChange={(event) => {
-                    changeViewMeasure(Number(event.target.value))
+                    changeViewMeasure(Number(event.target.value));
+                    localStorage.setItem("viewMeasure", String(event.target.value));
                   }}
                   label="表示する小節数"
                 >

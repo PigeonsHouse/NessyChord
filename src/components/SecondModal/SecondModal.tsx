@@ -6,8 +6,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Button } from "@mui/material";
-
-export type BeatType =  "4/4" | "3/4";
+import { BeatType } from "definitions";
 
 type SecondModalProps = Readonly<{
   open: boolean;

@@ -74,12 +74,14 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
             <Button onClick={() => {
               if (offset > 0) {
                 setOffset(offset-1);
+                localStorage.setItem("offset", String(offset-1));
               }
             }}>
               <NavigateBefore />
             </Button>
             <Button onClick={() => {
               setOffset(offset+1);
+              localStorage.setItem("offset", String(offset+1));
             }}>
               <NavigateNext />
             </Button>
