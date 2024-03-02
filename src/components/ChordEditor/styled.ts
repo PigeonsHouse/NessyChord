@@ -19,6 +19,11 @@ export const Editor = styled.div`
   justify-content: center;
 `;
 
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const ChordLine = styled.div`
   height: 40%;
   border-bottom: #888 2px solid;

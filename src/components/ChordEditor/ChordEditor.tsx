@@ -1,7 +1,9 @@
 import React, { useMemo } from "react";
 import { cx } from "@emotion/css";
 import { Palette } from "components/Palette/Palette"
-import { ChordLine, Container, Editor, EditorContainer, LineHeader, ChordBox, ChordContainer, RhythmLine, DominantChordBox, SubDominantChordBox, TonicChordBox } from "./styled"
+import { ChordLine, Container, Editor, EditorContainer, LineHeader, ChordBox, ChordContainer, RhythmLine, DominantChordBox, SubDominantChordBox, TonicChordBox, ButtonContainer } from "./styled"
+import { NavigateBefore, NavigateNext } from "@mui/icons-material";
+import { Button } from "@mui/material";
 
 const degreeLabel = [
   "I",
@@ -38,6 +40,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
   viewMeasure,
   offset,
   chordProgression,
+  setOffset,
 }) => {
   const viewChordCount = useMemo(() => {
     return beat * viewMeasure;
@@ -58,6 +61,20 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
     <Container>
       <EditorContainer>
         <Editor>
+          <ButtonContainer>
+            <Button onClick={() => {
+              if (offset > 0) {
+                setOffset(offset-1);
+              }
+            }}>
+              <NavigateBefore />
+            </Button>
+            <Button onClick={() => {
+              setOffset(offset+1);
+            }}>
+              <NavigateNext />
+            </Button>
+          </ButtonContainer>
           <ChordLine>
             <LineHeader>
               コード

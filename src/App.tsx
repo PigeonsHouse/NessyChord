@@ -34,7 +34,6 @@ function App() {
         interval: "minor"
       },
     ] as Chord[],
-    offset: 0,
   }
 
   const theme = createTheme({
@@ -48,7 +47,7 @@ function App() {
   const [key, changeKey] = useState<"A"|"B"|"C"|"D"|"E"|"F"|"G">("C");
   const [viewMeasure, changeViewMeasure] = useState<number>(2);
   const [chordProgression, updateChordProgression] = useState<Chord[]>(dummyData.chordProgression);
-  const [offset, setOffset] = useState<number>(dummyData.offset);
+  const [offset, setOffset] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useToggle(false);
   const [target, setTarget] = useState<EditTarget>("chord");
   const [bpm, setBpm] = useState<number>(120);
