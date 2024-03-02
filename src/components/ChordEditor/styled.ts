@@ -37,6 +37,7 @@ export const LineHeader = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 export const RhythmLine = styled.div`
@@ -47,9 +48,11 @@ export const RhythmLine = styled.div`
 export const ChordContainer = styled.div`
   flex-grow: 1;
   display: flex;
+  overflow-x: auto;
 `;
 
 export const ChordBox = (count: number) => css`
+  min-width: 55px;
   height: 100%;
   width: calc(100% / ${count});
   border: 2px dotted #aaa;
