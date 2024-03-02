@@ -122,6 +122,15 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
               リズム
             </LineHeader>
             <ChordContainer>
+              {
+                viewChords.map((_, index) => {
+                  return (
+                    <div key={index} className={ChordBox(viewChordCount)}>
+                      -
+                    </div>
+                  )
+                })
+              }
             </ChordContainer>
           </RhythmLine>
         </Editor>
