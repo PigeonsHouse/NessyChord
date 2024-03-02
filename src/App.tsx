@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material';
+import { green } from '@mui/material/colors';
 import Toolbar from '@mui/material/Toolbar';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { Header, FirstModal, SongSetting, SecondModal, ChordEditor, RhythmEditor } from './components';
 import ToggleButton from '@mui/material/ToggleButton';
-import { MelodyEditor } from './components/MelodyEditor/MelodyEditor';
+import { Header, FirstModal, SongSetting, SecondModal, ChordEditor, MelodyEditor, RhythmEditor } from './components';
 import { Main, Root } from './App.styled';
 
 const beatTypeLabel = {
@@ -14,6 +15,12 @@ const beatTypeLabel = {
 type EditTarget = "chord"|"melody"|"rhythm";
 
 function App() {
+  const theme = createTheme({
+    palette: {
+      primary: green,
+    }
+  });
+
   const [openFile, changeFile] = useState<string|undefined>(undefined);
   const [songSetting, setSongSetting] = useState<SongSetting|undefined>(undefined);
   const [target, setTarget] = useState<EditTarget>("chord");
@@ -34,7 +41,7 @@ function App() {
   const beforeInitSetting = songSetting === undefined;
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Root>
         <Header />
         {!beforeInitSetting && (
@@ -74,7 +81,7 @@ function App() {
       </Root>
       <FirstModal open={notOpenFile} onSelect={onSelectFirstModal} />
       <SecondModal open={!notOpenFile && beforeInitSetting} onSelect={onSubmitSongSetting} />
-    </>
+    </ThemeProvider>
   )
 }
 
