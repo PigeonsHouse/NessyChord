@@ -4,20 +4,49 @@ import { green } from '@mui/material/colors';
 import Toolbar from '@mui/material/Toolbar';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import { Header, FirstModal, SongSetting, SecondModal, ChordEditor, MelodyEditor, RhythmEditor } from './components';
+import { Header, FirstModal, SongSetting, SecondModal, ChordEditor, MelodyEditor, RhythmEditor, Chord } from './components';
 import { Main, Root } from './App.styled';
 
 type EditTarget = "chord"|"melody"|"rhythm";
 
 function App() {
+  const dummyData = {
+    openFile: "",
+    songSetting: {
+      beatType: "4/4",
+      bpm: 200
+    } as SongSetting,
+    key: "C" as "A"|"B"|"C"|"D"|"E"|"F"|"G",
+    chordProgression: [
+      {
+        degree: 4,
+        interval: "major"
+      },
+      {
+        degree: 5,
+        interval: "major"
+      },
+      {
+        degree: 3,
+        interval: "minor"
+      },
+      {
+        degree: 6,
+        interval: "minor"
+      },
+    ] as Chord[],
+    viewMeasure: 1,
+    page: 1,
+  }
+
   const theme = createTheme({
     palette: {
       primary: green,
     }
   });
 
-  const [openFile, changeFile] = useState<string|undefined>("");
-  const [songSetting, setSongSetting] = useState<SongSetting|undefined>({beatType: "4/4", bpm: 200});
+  const [openFile, changeFile] = useState<string|undefined>(dummyData.openFile);
+  const [songSetting, setSongSetting] = useState<SongSetting|undefined>(dummyData.songSetting);
   const [target, setTarget] = useState<EditTarget>("chord");
 
   const onSelectFirstModal = useCallback((value: string) => {
@@ -65,29 +94,10 @@ function App() {
               target === "chord" ? (
                 <ChordEditor
                   beat={Number(songSetting.beatType[0])}
-                  viewMeasure={1}
-                  page={1}
-                  chordProgression={{
-                    key: "C",
-                    chords  : [
-                      {
-                        degree: 4,
-                        interval: "major"
-                      },
-                      {
-                        degree: 5,
-                        interval: "major"
-                      },
-                      {
-                        degree: 3,
-                        interval: "minor"
-                      },
-                      {
-                        degree: 6,
-                        interval: "minor"
-                      },
-                    ]
-                  }}
+                  key={dummyData.key}
+                  chordProgression={dummyData.chordProgression}
+                  viewMeasure={dummyData.viewMeasure}
+                  page={dummyData.page}
                 />
               ) : target === "melody" ? (
                 <MelodyEditor />
