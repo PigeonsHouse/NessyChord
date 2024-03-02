@@ -1,1 +1,1 @@
-export * from "./ChordEditor"
+export * from "./ChordEditor";

@@ -1,9 +1,23 @@
 import React, { useMemo } from "react";
 import { cx } from "@emotion/css";
-import { Palette } from "components/Palette/Palette"
-import { ChordLine, Container, Editor, EditorContainer, LineHeader, ChordBox, ChordContainer, RhythmLine, DominantChordBox, SubDominantChordBox, TonicChordBox, ButtonContainer } from "./styled"
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 import { Button } from "@mui/material";
+import { Palette } from "components"
+import { Chord, Key } from "definitions";
+import {
+  ChordLine,
+  Container,
+  Editor,
+  EditorContainer,
+  LineHeader,
+  ChordBox,
+  ChordContainer,
+  RhythmLine,
+  DominantChordBox,
+  SubDominantChordBox,
+  TonicChordBox,
+  ButtonContainer
+} from "./styled"
 
 const degreeLabel = [
   "I",
@@ -20,16 +34,11 @@ const intervalLabel = {
   "minor": "m",
 };
 
-export type Chord = Readonly<{
-  degree: 1|2|3|4|5|6|7,
-  interval: "major"|"minor",
-}>;
-
 type ChordEditorProps = Readonly<{
   beat: number,
   viewMeasure: number,
   offset: number,
-  key: "A"|"B"|"C"|"D"|"E"|"F"|"G",
+  key: Key,
   chordProgression: (Chord|null)[],
   setOffset: (value: number) => void;
   updateChordProgression: (value: (Chord)[]) => void;
