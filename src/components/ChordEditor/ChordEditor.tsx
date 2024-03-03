@@ -128,6 +128,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                 viewChords.map((viewChord, index) => {
                   const existChordBox = viewChord !== null && ExistChordBox(functionColor[majorScaleFunction[viewChord.degree-1]]);
                   const style = cx(ChordBox(viewChordCount, beat), existChordBox);
+                  const keyIndex = Key.indexOf(scaleKey);
                   return (
                     <div key={index} className={style} onContextMenu={(e) => {
                       e.preventDefault();
@@ -138,10 +139,17 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                         viewChord === null ? (
                           "なし"
                         ) : (
-                          <b>
-                            {degreeLabel[viewChord.degree-1]}
-                            {intervalLabel[viewChord.interval]}
-                          </b>
+                          <>
+                            <div>
+                              <b>
+                                {degreeLabel[viewChord.degree-1]}
+                                {intervalLabel[viewChord.interval]}
+                              </b>
+                            </div>
+                            <div>
+                              {`(${Key[(keyIndex + majorScaleDistance[viewChord.degree-1]) % 12]}${intervalLabel[viewChord.interval]})`}
+                            </div>
+                          </>
                         )
                       }
                     </div>
@@ -186,6 +194,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
       >
         <BoxContainer>
           {paletteMenu.map((menuItem, index) => {
+            const keyIndex = Key.indexOf(scaleKey);
             return (
               <Box
                 key={index}
@@ -207,7 +216,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                   </b>
                 </div>
                 <div>
-                  {`(${Key[(index + majorScaleDistance[menuItem.degree-1]) % 12]}${intervalLabel[menuItem.interval]})`}
+                  {`(${Key[(keyIndex + majorScaleDistance[menuItem.degree-1]) % 12]}${intervalLabel[menuItem.interval]})`}
                 </div>
               </Box>
             )
