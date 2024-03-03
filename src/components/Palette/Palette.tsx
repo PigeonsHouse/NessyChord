@@ -86,7 +86,10 @@ export const Palette: React.FC<PaletteProps> = ({
                 }}
                 onClick={() => {
                   const copyMenu = [...menu];
-                  copyMenu[selectingDegreeNum].interval = interval;
+                  copyMenu[selectingDegreeNum] = Object.assign({
+                    degree: menu[selectingDegreeNum].degree,
+                    interval: interval,
+                  }, {});
                   setMenu(copyMenu);
                   setAnchorEl(null);
                   setSelectingDegreeNum(-1);

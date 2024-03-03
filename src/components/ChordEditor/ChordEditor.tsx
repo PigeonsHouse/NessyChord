@@ -87,20 +87,6 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
     return sliceChords;
   }, [chordProgression, offset, viewChordCount, beat]);
 
-  const updateChordProgressionFactory = (val: number) => {
-    return () => {
-      const copyChordProgression = [...chordProgression];
-      const diff = selectingChordNum - copyChordProgression.length;
-      for (let i = 0; i < diff; i++) {
-        copyChordProgression.push(null);
-      }
-      copyChordProgression[selectingChordNum] = paletteMenu[val];
-      updateChordProgression(copyChordProgression);
-      setAnchorEl(null);
-      setSelectingChordNum(-1);
-    }
-  }
-
   return (
     <Container>
       <EditorContainer>
@@ -215,7 +201,17 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
             return (
               <Box
                 key={index}
-                onClick={updateChordProgressionFactory(index)}
+                onClick={() => {
+                  const copyChordProgression = [...chordProgression];
+                  const diff = selectingChordNum - copyChordProgression.length;
+                  for (let i = 0; i < diff; i++) {
+                    copyChordProgression.push(null);
+                  }
+                  copyChordProgression[selectingChordNum] = Object.assign(paletteMenu[index], {});
+                  updateChordProgression(copyChordProgression);
+                  setAnchorEl(null);
+                  setSelectingChordNum(-1);
+                }}
                 sx={{
                   height: 80,
                   width: 80,
