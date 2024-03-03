@@ -1,7 +1,10 @@
-export type Chord = Readonly<{
+export const Interval = ["major", "minor", "minorFlatFive"] as const;
+type Interval = typeof Interval[number];
+
+export type Chord = {
   degree: 1|2|3|4|5|6|7,
   interval: "major"|"minor"|"minorFlatFive",
-}>;
+};
 
 export const degreeLabel = [
   "I",
@@ -13,15 +16,16 @@ export const degreeLabel = [
   "VII",
 ];
 
-export const intervalLabel = {
-  "major": "",
-  "minor": "m",
-  "minorFlatFive": "m-5",
+export const intervalLabel: Record<Interval, string> = {
+  major: "",
+  minor: "m",
+  minorFlatFive: "m-5",
 };
 
 export const majorScaleDistance = [0, 2, 4, 5, 7, 9, 11];
 
-type ChordFunction = "tonic" | "subdominant" | "dominant";
+const ChordFunction = ["tonic", "subdominant", "dominant"] as const;
+type ChordFunction = typeof ChordFunction[number];
 
 export const majorScaleFunction: ChordFunction[] = [
   "tonic",

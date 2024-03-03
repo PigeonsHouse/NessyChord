@@ -143,6 +143,10 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                         e.preventDefault();
                         if (!isPlaying) {
                           const copyChordProgression = [...chordProgression];
+                          const diff = offset * beat + index - copyChordProgression.length;
+                          for (let i = 0; i < diff; i++) {
+                            copyChordProgression.push(null);
+                          }
                           copyChordProgression[offset*beat+index] = null;
                           updateChordProgression(copyChordProgression);
                         }
