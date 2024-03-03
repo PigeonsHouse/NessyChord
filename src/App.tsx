@@ -23,7 +23,6 @@ const createChords = (key: Key, chordProgression: (Chord|null)[]) => {
       const rootIndex = (index + majorScaleDistance[chord.degree-1]) % 12;
       const thirdIndex = (rootIndex + (chord.interval === "major" ? 4 : 3));
       const fifthIndex = (rootIndex + (chord.interval === "minorFlatFive" ? 6 : 7));
-      console.log(thirdIndex)
       chordTones.push([
         Key[rootIndex] + "4",
         Key[thirdIndex % 12] + `${4 + Math.floor(thirdIndex / 12)}`,
@@ -118,7 +117,6 @@ function App() {
         localSynth = synth;
       }
       const chords = createChords(key, chordProgression);
-      console.log(chords[0])
       let eventId = 0;
       eventId = Tone.Transport.scheduleRepeat((time) => {
           const chord = chords.shift();

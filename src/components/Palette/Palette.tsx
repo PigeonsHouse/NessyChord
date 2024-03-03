@@ -85,8 +85,6 @@ export const Palette: React.FC<PaletteProps> = ({
                   flexDirection: "column"
                 }}
                 onClick={() => {
-                  console.log(interval)
-                  console.log(idx)
                   const copyMenu = [...menu];
                   copyMenu[selectingDegreeNum].interval = interval;
                   setMenu(copyMenu);
