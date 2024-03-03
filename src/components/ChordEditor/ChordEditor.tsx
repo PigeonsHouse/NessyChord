@@ -19,6 +19,7 @@ import {
 } from "./styled"
 
 type ChordEditorProps = Readonly<{
+  isPlaying: boolean,
   beat: number,
   viewMeasure: number,
   offset: number,
@@ -29,6 +30,7 @@ type ChordEditorProps = Readonly<{
 }>;
 
 export const ChordEditor: React.FC<ChordEditorProps> = ({
+  isPlaying,
   scaleKey,
   beat,
   viewMeasure,
@@ -130,11 +132,22 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                   const style = cx(ChordBox(viewChordCount, beat), existChordBox);
                   const keyIndex = Key.indexOf(scaleKey);
                   return (
-                    <div key={index} className={style} onContextMenu={(e) => {
-                      e.preventDefault();
-                      setSelectingChordNum(offset*4+index)
-                      setAnchorEl(e.currentTarget)
-                    }}>
+                    <div key={index} className={style}
+                      onClick={(e) => {
+                        if (!isPlaying) {
+                          setSelectingChordNum(offset*beat+index)
+                          setAnchorEl(e.currentTarget)
+                        }
+                      }}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        if (!isPlaying) {
+                          const copyChordProgression = [...chordProgression];
+                          copyChordProgression[offset*beat+index] = null;
+                          updateChordProgression(copyChordProgression);
+                        }
+                      }}
+                    >
                       {
                         viewChord === null ? (
                           "なし"

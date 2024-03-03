@@ -222,6 +222,7 @@ function App() {
             {
               target === "chord" ? (
                 <ChordEditor
+                  isPlaying={isPlaying}
                   beat={Number(beatType[0])}
                   scaleKey={key}
                   chordProgression={chordProgression}
