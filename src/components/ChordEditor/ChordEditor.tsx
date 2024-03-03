@@ -1,7 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { cx } from "@emotion/css";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Box, Button, Popover } from "@mui/material";
 import { Palette } from "components"
 import { Chord, Key } from "definitions";
 import {
@@ -16,7 +16,11 @@ import {
   DominantChordBox,
   SubDominantChordBox,
   TonicChordBox,
-  ButtonContainer
+  ButtonContainer,
+  BoxContainer,
+  TonicIcon,
+  SubDominantIcon,
+  DominantIcon,
 } from "./styled"
 
 const degreeLabel = [
@@ -41,7 +45,7 @@ type ChordEditorProps = Readonly<{
   key: Key,
   chordProgression: (Chord|null)[],
   setOffset: (value: number) => void;
-  updateChordProgression: (value: (Chord)[]) => void;
+  updateChordProgression: (value: (Chord|null)[]) => void;
 }>;
 
 export const ChordEditor: React.FC<ChordEditorProps> = ({
@@ -50,7 +54,37 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
   offset,
   chordProgression,
   setOffset,
+  updateChordProgression,
 }) => {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
+  const [paletteMenu, setPaletteMenu] = useState<Chord[]>([
+    {
+      degree: 1,
+      interval: "major",
+    },
+    {
+      degree: 2,
+      interval: "minor",
+    },
+    {
+      degree: 3,
+      interval: "minor",
+    },
+    {
+      degree: 4,
+      interval: "major",
+    },
+    {
+      degree: 5,
+      interval: "major",
+    },
+    {
+      degree: 6,
+      interval: "minor",
+    },
+  ]);
+  const [selectingChordNum, setSelectingChordNum] = useState<number>(-1);
+
   const viewChordCount = useMemo(() => {
     return beat * viewMeasure;
   }, [beat, viewMeasure]);
@@ -65,6 +99,20 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
     }
     return sliceChords;
   }, [chordProgression, offset, viewChordCount]);
+
+  const updateChordProgressionFactory = (val: number) => {
+    return () => {
+      const copyChordProgression = [...chordProgression];
+      const diff = selectingChordNum - copyChordProgression.length;
+      for (let i = 0; i < diff; i++) {
+        copyChordProgression.push(null);
+      }
+      copyChordProgression[selectingChordNum] = paletteMenu[val];
+      updateChordProgression(copyChordProgression);
+      setAnchorEl(null);
+      setSelectingChordNum(-1);
+    }
+  }
 
   return (
     <Container>
@@ -100,7 +148,11 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                   )
                   const style = cx(ChordBox(viewChordCount), existChordBox);
                   return (
-                    <div key={index} className={style}>
+                    <div key={index} className={style} onContextMenu={(e) => {
+                      e.preventDefault();
+                      setSelectingChordNum(offset+index)
+                      setAnchorEl(e.currentTarget)
+                    }}>
                       {
                         viewChord === null ? (
                           "なし"
@@ -135,7 +187,61 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
           </RhythmLine>
         </Editor>
       </EditorContainer>
-      <Palette />
+      <Palette menu={paletteMenu} setMenu={setPaletteMenu} />
+      <Popover
+        open={selectingChordNum > -1} anchorEl={anchorEl}
+        onClose={() => {
+          setAnchorEl(null);
+          setSelectingChordNum(-1);
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <BoxContainer>
+          <Box
+            onClick={updateChordProgressionFactory(0)}
+            className={TonicIcon}
+          >
+            I
+          </Box>
+          <Box
+            onClick={updateChordProgressionFactory(1)}
+            className={SubDominantIcon}
+          >
+            IIm
+          </Box>
+          <Box
+            onClick={updateChordProgressionFactory(2)}
+            className={TonicIcon}
+          >
+            IIIm
+          </Box>
+          <Box
+            onClick={updateChordProgressionFactory(3)}
+            className={SubDominantIcon}
+          >
+            IV
+          </Box>
+          <Box
+            onClick={updateChordProgressionFactory(4)}
+            className={DominantIcon}
+          >
+            V
+          </Box>
+          <Box
+            onClick={updateChordProgressionFactory(5)}
+            className={TonicIcon}
+          >
+            VIm
+          </Box>
+        </BoxContainer>
+      </Popover>
     </Container>
   )
 }

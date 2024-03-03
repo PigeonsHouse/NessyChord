@@ -2,6 +2,7 @@ import { css } from "@emotion/css";
 import styled from "@emotion/styled";
 
 export const Container = styled.div`
+  user-select: none;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -75,5 +76,45 @@ export const SubDominantChordBox = css`
 
 export const DominantChordBox = css`
   border: 2px solid #aaa;
+  background-color: #ff475d;
+`;
+
+export const BoxContainer = styled.div`
+  width: 260px;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  user-select: none;
+`;
+
+export const TonicIcon = css`
+  height: 80px;
+  width: 80px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #477fff;,
+`;
+
+export const SubDominantIcon = css`
+  height: 80px;
+  width: 80px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #19e341;
+`;
+
+export const DominantIcon = css`
+  height: 80px;
+  width: 80px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #ff475d;
 `;

@@ -13,60 +13,27 @@ import { Main, Root } from './App.styled';
 
 type EditTarget = "chord"|"melody"|"rhythm";
 
-const createChords = (key: Key, chordProgression: Chord[]) => {
+const createChords = (key: Key, chordProgression: (Chord|null)[]) => {
   const index = Key.indexOf(key);
   const chordTones: string[][] = [];
   for (const chord of chordProgression) {
-    const rootIndex = (index + chord.degree - 1) % 7;
-    const thirdIndex = (rootIndex + 2);
-    const fifthIndex = (thirdIndex + 2);
-    chordTones.push([
-      Key[rootIndex] + "4",
-      Key[thirdIndex % 7] + `${4 + Math.floor(thirdIndex / 7)}`,
-      Key[fifthIndex % 7] + `${4 + Math.floor(fifthIndex / 7)}`,
-    ])
+    if (chord === null) {
+      chordTones.push([])
+    } else {
+      const rootIndex = (index + chord.degree - 1) % 7;
+      const thirdIndex = (rootIndex + 2);
+      const fifthIndex = (thirdIndex + 2);
+      chordTones.push([
+        Key[rootIndex] + "4",
+        Key[thirdIndex % 7] + `${4 + Math.floor(thirdIndex / 7)}`,
+        Key[fifthIndex % 7] + `${4 + Math.floor(fifthIndex / 7)}`,
+      ])
+    }
   }
   return chordTones;
 }
 
 function App() {
-  const dummyData = {
-    chordProgression: [
-      {
-        degree: 4,
-        interval: "major"
-      },
-      {
-        degree: 5,
-        interval: "major"
-      },
-      {
-        degree: 3,
-        interval: "minor"
-      },
-      {
-        degree: 6,
-        interval: "minor"
-      },
-      {
-        degree: 2,
-        interval: "minor"
-      },
-      {
-        degree: 5,
-        interval: "major"
-      },
-      {
-        degree: 1,
-        interval: "major"
-      },
-      {
-        degree: 6,
-        interval: "minor"
-      },
-    ] as Chord[],
-  }
-
   const theme = createTheme({
     palette: {
       primary: cyan,
@@ -77,7 +44,7 @@ function App() {
   const [beatType, setBeatType] = useState<BeatType|undefined>();
   const [key, changeKey] = useState<Key>("C");
   const [viewMeasure, changeViewMeasure] = useState<number>(2);
-  const [chordProgression, updateChordProgression] = useState<Chord[]>(dummyData.chordProgression);
+  const [chordProgression, updateChordProgression] = useState<(Chord|null)[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [target, setTarget] = useState<EditTarget>("chord");
@@ -153,7 +120,7 @@ function App() {
       let eventId = 0;
       eventId = Tone.Transport.scheduleRepeat((time) => {
           const chord = chords.shift();
-          if (chord) {
+          if (chord !== undefined) {
             localSynth.triggerAttackRelease(chord, '4n', time);
           } else {
             Tone.Transport.clear(eventId);

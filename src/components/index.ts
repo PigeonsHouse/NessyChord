@@ -5,3 +5,4 @@ export * from "./MelodyEditor";
 export * from "./Palette";
 export * from "./RhythmEditor";
 export * from "./SecondModal";
+export * from "./SelectorPalette";
