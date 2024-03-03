@@ -62,6 +62,9 @@ export const ChordBox = (count: number) => css`
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  &:nth-child(4n+1) {
+    border-left: #f50e0a 3px solid;
+  }
 `;
 
 export const TonicChordBox = css`

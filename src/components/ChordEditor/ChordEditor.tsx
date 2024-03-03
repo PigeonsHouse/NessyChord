@@ -90,7 +90,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
   }, [beat, viewMeasure]);
 
   const viewChords = useMemo(() => {
-    const sliceChords = chordProgression.slice(offset, offset+viewChordCount);
+    const sliceChords = chordProgression.slice(offset*4, offset*4+viewChordCount);
     const shortageCount = viewChordCount - sliceChords.length;
     if (shortageCount !== 0) {
       for (let i = 0; i < shortageCount; i++) {
@@ -150,7 +150,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                   return (
                     <div key={index} className={style} onContextMenu={(e) => {
                       e.preventDefault();
-                      setSelectingChordNum(offset+index)
+                      setSelectingChordNum(offset*4+index)
                       setAnchorEl(e.currentTarget)
                     }}>
                       {
