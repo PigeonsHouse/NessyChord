@@ -8,7 +8,7 @@ import Stop from '@mui/icons-material/Stop';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { Header, FirstModal, SecondModal, ChordEditor, MelodyEditor, RhythmEditor } from './components';
-import { Key, Chord, BeatType } from "./definitions";
+import { Key, Chord, BeatType, majorScaleDistance } from "./definitions";
 import { Main, Root } from './App.styled';
 
 type EditTarget = "chord"|"melody"|"rhythm";
@@ -20,13 +20,14 @@ const createChords = (key: Key, chordProgression: (Chord|null)[]) => {
     if (chord === null) {
       chordTones.push([])
     } else {
-      const rootIndex = (index + chord.degree - 1) % 7;
-      const thirdIndex = (rootIndex + 2);
-      const fifthIndex = (thirdIndex + 2);
+      const rootIndex = (index + majorScaleDistance[chord.degree-1]) % 12;
+      const thirdIndex = (rootIndex + (chord.interval === "major" ? 4 : 3));
+      const fifthIndex = (rootIndex + (chord.interval === "minorFlatFive" ? 6 : 7));
+      console.log(thirdIndex)
       chordTones.push([
         Key[rootIndex] + "4",
-        Key[thirdIndex % 7] + `${4 + Math.floor(thirdIndex / 7)}`,
-        Key[fifthIndex % 7] + `${4 + Math.floor(fifthIndex / 7)}`,
+        Key[thirdIndex % 12] + `${4 + Math.floor(thirdIndex / 12)}`,
+        Key[fifthIndex % 12] + `${4 + Math.floor(fifthIndex / 12)}`,
       ])
     }
   }
@@ -117,6 +118,7 @@ function App() {
         localSynth = synth;
       }
       const chords = createChords(key, chordProgression);
+      console.log(chords[0])
       let eventId = 0;
       eventId = Tone.Transport.scheduleRepeat((time) => {
           const chord = chords.shift();
@@ -184,11 +186,16 @@ function App() {
                   label="キー"
                 >
                   <MenuItem value="C">C</MenuItem>
+                  <MenuItem value="C#">C#</MenuItem>
                   <MenuItem value="D">D</MenuItem>
+                  <MenuItem value="D#">D#</MenuItem>
                   <MenuItem value="E">E</MenuItem>
                   <MenuItem value="F">F</MenuItem>
+                  <MenuItem value="F#">F#</MenuItem>
                   <MenuItem value="G">G</MenuItem>
+                  <MenuItem value="G#">G#</MenuItem>
                   <MenuItem value="A">A</MenuItem>
+                  <MenuItem value="A#">A#</MenuItem>
                   <MenuItem value="B">B</MenuItem>
                 </Select>
               </FormControl>
@@ -216,7 +223,7 @@ function App() {
               target === "chord" ? (
                 <ChordEditor
                   beat={Number(beatType[0])}
-                  key={key}
+                  scaleKey={key}
                   chordProgression={chordProgression}
                   offset={offset}
                   viewMeasure={viewMeasure}

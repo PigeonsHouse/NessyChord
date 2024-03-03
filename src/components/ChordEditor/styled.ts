@@ -52,8 +52,8 @@ export const ChordContainer = styled.div`
   overflow-x: auto;
 `;
 
-export const ChordBox = (count: number) => css`
-  min-width: 55px;
+export const ChordBox = (count: number, beat: number) => css`
+  min-width: 100px;
   height: 100%;
   width: calc(100% / ${count});
   border: 2px dotted #aaa;
@@ -62,24 +62,16 @@ export const ChordBox = (count: number) => css`
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  &:nth-child(4n+1) {
+  &:nth-child(${beat}n+1) {
     border-left: #f50e0a 3px solid;
   }
 `;
 
-export const TonicChordBox = css`
+export const ExistChordBox = (colorCode: string) => css`
   border: 2px solid #aaa;
-  background-color: #477fff;
-`;
-
-export const SubDominantChordBox = css`
-  border: 2px solid #aaa;
-  background-color: #19e341;
-`;
-
-export const DominantChordBox = css`
-  border: 2px solid #aaa;
-  background-color: #ff475d;
+  background-color: ${colorCode};
+  display: flex;
+  flex-direction: column;
 `;
 
 export const BoxContainer = styled.div`
@@ -90,34 +82,4 @@ export const BoxContainer = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   user-select: none;
-`;
-
-export const TonicIcon = css`
-  height: 80px;
-  width: 80px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #477fff;,
-`;
-
-export const SubDominantIcon = css`
-  height: 80px;
-  width: 80px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #19e341;
-`;
-
-export const DominantIcon = css`
-  height: 80px;
-  width: 80px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ff475d;
 `;

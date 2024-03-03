@@ -3,7 +3,7 @@ import { cx } from "@emotion/css";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 import { Box, Button, Popover } from "@mui/material";
 import { Palette } from "components"
-import { Chord, Key } from "definitions";
+import { Chord, Key, degreeLabel, functionColor, intervalLabel, majorScaleDistance, majorScaleFunction } from "definitions";
 import {
   ChordLine,
   Container,
@@ -13,42 +13,23 @@ import {
   ChordBox,
   ChordContainer,
   RhythmLine,
-  DominantChordBox,
-  SubDominantChordBox,
-  TonicChordBox,
   ButtonContainer,
   BoxContainer,
-  TonicIcon,
-  SubDominantIcon,
-  DominantIcon,
+  ExistChordBox,
 } from "./styled"
-
-const degreeLabel = [
-  "I",
-  "II",
-  "III",
-  "IV",
-  "V",
-  "VI",
-  "VII",
-];
-
-const intervalLabel = {
-  "major": "",
-  "minor": "m",
-};
 
 type ChordEditorProps = Readonly<{
   beat: number,
   viewMeasure: number,
   offset: number,
-  key: Key,
+  scaleKey: Key,
   chordProgression: (Chord|null)[],
   setOffset: (value: number) => void;
   updateChordProgression: (value: (Chord|null)[]) => void;
 }>;
 
 export const ChordEditor: React.FC<ChordEditorProps> = ({
+  scaleKey,
   beat,
   viewMeasure,
   offset,
@@ -82,6 +63,10 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
       degree: 6,
       interval: "minor",
     },
+    {
+      degree: 7,
+      interval: "minorFlatFive",
+    },
   ]);
   const [selectingChordNum, setSelectingChordNum] = useState<number>(-1);
 
@@ -90,7 +75,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
   }, [beat, viewMeasure]);
 
   const viewChords = useMemo(() => {
-    const sliceChords = chordProgression.slice(offset*4, offset*4+viewChordCount);
+    const sliceChords = chordProgression.slice(offset*beat, offset*beat+viewChordCount);
     const shortageCount = viewChordCount - sliceChords.length;
     if (shortageCount !== 0) {
       for (let i = 0; i < shortageCount; i++) {
@@ -98,7 +83,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
       }
     }
     return sliceChords;
-  }, [chordProgression, offset, viewChordCount]);
+  }, [chordProgression, offset, viewChordCount, beat]);
 
   const updateChordProgressionFactory = (val: number) => {
     return () => {
@@ -141,12 +126,8 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
             <ChordContainer>
               {
                 viewChords.map((viewChord, index) => {
-                  const existChordBox = viewChord === null ? null : (
-                    viewChord.degree === 5 ? DominantChordBox : (
-                      [2, 4].includes(viewChord.degree) ? SubDominantChordBox : TonicChordBox
-                    )
-                  )
-                  const style = cx(ChordBox(viewChordCount), existChordBox);
+                  const existChordBox = viewChord !== null && ExistChordBox(functionColor[majorScaleFunction[viewChord.degree-1]]);
+                  const style = cx(ChordBox(viewChordCount, beat), existChordBox);
                   return (
                     <div key={index} className={style} onContextMenu={(e) => {
                       e.preventDefault();
@@ -157,10 +138,10 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
                         viewChord === null ? (
                           "なし"
                         ) : (
-                          <p>
+                          <b>
                             {degreeLabel[viewChord.degree-1]}
                             {intervalLabel[viewChord.interval]}
-                          </p>
+                          </b>
                         )
                       }
                     </div>
@@ -177,7 +158,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
               {
                 viewChords.map((_, index) => {
                   return (
-                    <div key={index} className={ChordBox(viewChordCount)}>
+                    <div key={index} className={ChordBox(viewChordCount, beat)}>
                       -
                     </div>
                   )
@@ -187,7 +168,7 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
           </RhythmLine>
         </Editor>
       </EditorContainer>
-      <Palette menu={paletteMenu} setMenu={setPaletteMenu} />
+      <Palette scaleKey={scaleKey} menu={paletteMenu} setMenu={setPaletteMenu} />
       <Popover
         open={selectingChordNum > -1} anchorEl={anchorEl}
         onClose={() => {
@@ -204,42 +185,33 @@ export const ChordEditor: React.FC<ChordEditorProps> = ({
         }}
       >
         <BoxContainer>
-          <Box
-            onClick={updateChordProgressionFactory(0)}
-            className={TonicIcon}
-          >
-            I
-          </Box>
-          <Box
-            onClick={updateChordProgressionFactory(1)}
-            className={SubDominantIcon}
-          >
-            IIm
-          </Box>
-          <Box
-            onClick={updateChordProgressionFactory(2)}
-            className={TonicIcon}
-          >
-            IIIm
-          </Box>
-          <Box
-            onClick={updateChordProgressionFactory(3)}
-            className={SubDominantIcon}
-          >
-            IV
-          </Box>
-          <Box
-            onClick={updateChordProgressionFactory(4)}
-            className={DominantIcon}
-          >
-            V
-          </Box>
-          <Box
-            onClick={updateChordProgressionFactory(5)}
-            className={TonicIcon}
-          >
-            VIm
-          </Box>
+          {paletteMenu.map((menuItem, index) => {
+            return (
+              <Box
+                key={index}
+                onClick={updateChordProgressionFactory(index)}
+                sx={{
+                  height: 80,
+                  width: 80,
+                  backgroundColor: functionColor[majorScaleFunction[menuItem.degree-1]],
+                  borderRadius: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <div>
+                  <b>
+                    {degreeLabel[menuItem.degree-1]}{intervalLabel[menuItem.interval]}
+                  </b>
+                </div>
+                <div>
+                  {`(${Key[(index + majorScaleDistance[menuItem.degree-1]) % 12]}${intervalLabel[menuItem.interval]})`}
+                </div>
+              </Box>
+            )
+          })}
         </BoxContainer>
       </Popover>
     </Container>

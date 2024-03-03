@@ -1,2 +1,2 @@
-export const Key = ["C", "D", "E", "F", "G", "A", "B"] as const;
+export const Key = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] as const;
 export type Key = (typeof Key)[number];
