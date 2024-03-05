@@ -24,9 +24,9 @@ const createChords = (key: Key, chordProgression: (Chord|null)[]) => {
       const thirdIndex = (rootIndex + (chord.interval === "major" ? 4 : 3));
       const fifthIndex = (rootIndex + (chord.interval === "minorFlatFive" ? 6 : 7));
       chordTones.push([
-        Key[rootIndex] + "4",
-        Key[thirdIndex % 12] + `${4 + Math.floor(thirdIndex / 12)}`,
-        Key[fifthIndex % 12] + `${4 + Math.floor(fifthIndex / 12)}`,
+        Key[rootIndex] + "3",
+        Key[thirdIndex % 12] + `${3 + Math.floor(thirdIndex / 12)}`,
+        Key[fifthIndex % 12] + `${3 + Math.floor(fifthIndex / 12)}`,
       ])
     }
   }
